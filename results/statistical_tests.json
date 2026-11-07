@@ -1,0 +1,264 @@
+{
+    "metadata": {
+        "project_name": "Statistical AI Benchmarking",
+        "author": "Tran Hoang Anh",
+        "n_train_samples": 2100,
+        "n_test_samples": 600,
+        "n_bootstrap_iterations": 2000
+    },
+    "bootstrap_confidence_intervals": {
+        "Logistic Regression": {
+            "accuracy": {
+                "point_estimate": 0.9516666666666667,
+                "std_error": 0.008823346714903793,
+                "ci_95_lower": 0.9333333333333333,
+                "ci_95_upper": 0.9683333333333334
+            },
+            "f1_score": {
+                "point_estimate": 0.9516668009262989,
+                "std_error": 0.008822415990903597,
+                "ci_95_lower": 0.9333355002166884,
+                "ci_95_upper": 0.9683278329963684
+            },
+            "precision": {
+                "point_estimate": 0.9516722222222223,
+                "std_error": 0.008799426422452366,
+                "ci_95_lower": 0.933528669251922,
+                "ci_95_upper": 0.9683454221518728
+            },
+            "recall": {
+                "point_estimate": 0.9516666666666667,
+                "std_error": 0.008823346714903793,
+                "ci_95_lower": 0.9333333333333333,
+                "ci_95_upper": 0.9683333333333334
+            },
+            "roc_auc": {
+                "point_estimate": 0.9509327881420906,
+                "std_error": 0.010628863329212354,
+                "ci_95_lower": 0.9276871337065363,
+                "ci_95_upper": 0.9697993232951355
+            }
+        },
+        "Random Forest": {
+            "accuracy": {
+                "point_estimate": 0.9516666666666667,
+                "std_error": 0.008823346714903793,
+                "ci_95_lower": 0.9333333333333333,
+                "ci_95_upper": 0.9683333333333334
+            },
+            "f1_score": {
+                "point_estimate": 0.9516668009262989,
+                "std_error": 0.008822415990903597,
+                "ci_95_lower": 0.9333355002166884,
+                "ci_95_upper": 0.9683278329963684
+            },
+            "precision": {
+                "point_estimate": 0.9516722222222223,
+                "std_error": 0.008799426422452366,
+                "ci_95_lower": 0.933528669251922,
+                "ci_95_upper": 0.9683454221518728
+            },
+            "recall": {
+                "point_estimate": 0.9516666666666667,
+                "std_error": 0.008823346714903793,
+                "ci_95_lower": 0.9333333333333333,
+                "ci_95_upper": 0.9683333333333334
+            },
+            "roc_auc": {
+                "point_estimate": 0.9521883576484184,
+                "std_error": 0.010273111859948223,
+                "ci_95_lower": 0.9313378339123117,
+                "ci_95_upper": 0.9711687249847635
+            }
+        },
+        "Multi-Layer Perceptron": {
+            "accuracy": {
+                "point_estimate": 0.9516666666666667,
+                "std_error": 0.008823346714903793,
+                "ci_95_lower": 0.9333333333333333,
+                "ci_95_upper": 0.9683333333333334
+            },
+            "f1_score": {
+                "point_estimate": 0.9516668009262989,
+                "std_error": 0.008822415990903597,
+                "ci_95_lower": 0.9333355002166884,
+                "ci_95_upper": 0.9683278329963684
+            },
+            "precision": {
+                "point_estimate": 0.9516722222222223,
+                "std_error": 0.008799426422452366,
+                "ci_95_lower": 0.933528669251922,
+                "ci_95_upper": 0.9683454221518728
+            },
+            "recall": {
+                "point_estimate": 0.9516666666666667,
+                "std_error": 0.008823346714903793,
+                "ci_95_lower": 0.9333333333333333,
+                "ci_95_upper": 0.9683333333333334
+            },
+            "roc_auc": {
+                "point_estimate": 0.9498105534505938,
+                "std_error": 0.01037185066691758,
+                "ci_95_lower": 0.9287530283831386,
+                "ci_95_upper": 0.9683490087011347
+            }
+        }
+    },
+    "mcnemar_tests": [
+        {
+            "model_A": "Logistic Regression",
+            "model_B": "Random Forest",
+            "contingency_table": {
+                "both_correct_n11": 571,
+                "A_correct_B_wrong_n10": 0,
+                "A_wrong_B_correct_n01": 0,
+                "both_wrong_n00": 29
+            },
+            "discordant_total": 0,
+            "exact_test": true,
+            "statistic": 0.0,
+            "p_value": 1.0,
+            "odds_ratio": 1.0,
+            "is_significant_at_05": false,
+            "is_significant_at_01": false
+        },
+        {
+            "model_A": "Logistic Regression",
+            "model_B": "Multi-Layer Perceptron",
+            "contingency_table": {
+                "both_correct_n11": 571,
+                "A_correct_B_wrong_n10": 0,
+                "A_wrong_B_correct_n01": 0,
+                "both_wrong_n00": 29
+            },
+            "discordant_total": 0,
+            "exact_test": true,
+            "statistic": 0.0,
+            "p_value": 1.0,
+            "odds_ratio": 1.0,
+            "is_significant_at_05": false,
+            "is_significant_at_01": false
+        },
+        {
+            "model_A": "Random Forest",
+            "model_B": "Multi-Layer Perceptron",
+            "contingency_table": {
+                "both_correct_n11": 571,
+                "A_correct_B_wrong_n10": 0,
+                "A_wrong_B_correct_n01": 0,
+                "both_wrong_n00": 29
+            },
+            "discordant_total": 0,
+            "exact_test": true,
+            "statistic": 0.0,
+            "p_value": 1.0,
+            "odds_ratio": 1.0,
+            "is_significant_at_05": false,
+            "is_significant_at_01": false
+        }
+    ],
+    "cross_validation_tests": {
+        "anova": {
+            "f_statistic": 0.301303181921731,
+            "p_value": 0.7423087387527805,
+            "is_significant_05": false
+        },
+        "pairwise_tests": [
+            {
+                "pair": "Logistic Regression vs Random Forest",
+                "mean_diff": 0.0023320920808814318,
+                "shapiro_normality_p": 0.0005995806740271555,
+                "assumption_normal": false,
+                "test_used": "Wilcoxon Signed-Rank Test",
+                "statistic": 0.0,
+                "p_value": 0.125,
+                "is_significant_05": false
+            },
+            {
+                "pair": "Logistic Regression vs Multi-Layer Perceptron",
+                "mean_diff": 0.0,
+                "shapiro_normality_p": 1.0,
+                "assumption_normal": true,
+                "test_used": "Paired Student's t-test",
+                "statistic": NaN,
+                "p_value": NaN,
+                "is_significant_05": false
+            },
+            {
+                "pair": "Random Forest vs Multi-Layer Perceptron",
+                "mean_diff": -0.0023320920808814318,
+                "shapiro_normality_p": 0.0005995806740271555,
+                "assumption_normal": false,
+                "test_used": "Wilcoxon Signed-Rank Test",
+                "statistic": 0.0,
+                "p_value": 0.125,
+                "is_significant_05": false
+            }
+        ],
+        "mean_scores": {
+            "Logistic Regression": 0.9566588195423066,
+            "Random Forest": 0.9543267274614251,
+            "Multi-Layer Perceptron": 0.9566588195423066
+        }
+    },
+    "latency_analysis": {
+        "summary_statistics": {
+            "Logistic Regression": {
+                "mean_ms": 2.2235756666782436,
+                "std_ms": 0.2818671545224825,
+                "median_ms": 2.1011500002714456,
+                "iqr_ms": 0.35075000027973147,
+                "p95_ms": 2.7667399999245386,
+                "p99_ms": 3.2176479999588987,
+                "lognormal_ks_statistic": 0.19398528736614473,
+                "lognormal_ks_pvalue": 2.9723825600211486e-20
+            },
+            "Random Forest": {
+                "mean_ms": 24.597949500004386,
+                "std_ms": 3.246341488803828,
+                "median_ms": 23.75034999977288,
+                "iqr_ms": 1.4587499997560371,
+                "p95_ms": 30.026880000036726,
+                "p99_ms": 36.73219299985703,
+                "lognormal_ks_statistic": 0.23174572478821154,
+                "lognormal_ks_pvalue": 8.136090871884023e-29
+            },
+            "Multi-Layer Perceptron": {
+                "mean_ms": 2.3101446666775396,
+                "std_ms": 0.2748913882425668,
+                "median_ms": 2.1970500001771143,
+                "iqr_ms": 0.30634999984613387,
+                "p95_ms": 2.916450000361692,
+                "p99_ms": 3.1801840000071024,
+                "lognormal_ks_statistic": 0.17541456778751913,
+                "lognormal_ks_pvalue": 1.2831661721427345e-16
+            }
+        },
+        "pairwise_latency_tests": [
+            {
+                "pair": "Logistic Regression vs Random Forest",
+                "u_statistic": 0.0,
+                "p_value": 1.4315078999608185e-197,
+                "is_significant_05": true,
+                "faster_model": "Logistic Regression",
+                "speedup_ratio": 11.30350046246322
+            },
+            {
+                "pair": "Logistic Regression vs Multi-Layer Perceptron",
+                "u_statistic": 122064.5,
+                "p_value": 4.829385258974924e-22,
+                "is_significant_05": true,
+                "faster_model": "Logistic Regression",
+                "speedup_ratio": 1.0456416723666941
+            },
+            {
+                "pair": "Random Forest vs Multi-Layer Perceptron",
+                "u_statistic": 360000.0,
+                "p_value": 1.4315146119903907e-197,
+                "is_significant_05": true,
+                "faster_model": "Multi-Layer Perceptron",
+                "speedup_ratio": 10.810109008833779
+            }
+        ]
+    }
+}
