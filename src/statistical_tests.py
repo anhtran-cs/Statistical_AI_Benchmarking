@@ -1,11 +1,11 @@
 """
 statistical_tests.py
-Module chứa các thuật toán và hàm kiểm định thống kê chuyên sâu phục vụ đánh giá mô hình AI/ML:
-1. Bootstrap Resampling: Ước lượng khoảng tin cậy 95% cho Accuracy, F1, Precision, Recall, AUC.
-2. McNemar's Test: So sánh cặp mô hình trên tập test chung (hiệu chỉnh liên tục & xác suất nhị thức chính xác).
-3. Repeated Cross-Validation + Paired t-Test / Wilcoxon: Kiểm định giả thuyết qua k-fold CV.
-4. Repeated Measures ANOVA & Post-hoc: So sánh đồng thời nhiều mô hình AI.
-5. Latency Distribution Analysis: Phân tích phân phối đuôi dài và kiểm định tốc độ (Mann-Whitney U).
+Advanced inferential and computational statistical testing module for AI benchmarking:
+1. Bootstrap Resampling: 95% Empirical Confidence Intervals for Accuracy, F1, Precision, Recall, AUC.
+2. McNemar's Test: Paired classification error testing (Edwards' continuity correction & exact binomial).
+3. 10-Fold Stratified Cross-Validation + Paired t-Test / Wilcoxon: Distribution-tested paired evaluation.
+4. Repeated Measures ANOVA & Post-hoc: Simultaneous multi-model variance analysis.
+5. Latency Distribution Analysis: Heavy-tailed Log-Normal modeling & non-parametric Mann-Whitney U test.
 """
 
 import numpy as np

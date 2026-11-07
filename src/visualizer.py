@@ -1,11 +1,11 @@
 """
 visualizer.py
-Module xuất bản các biểu đồ khoa học trực quan hóa kết quả kiểm định thống kê:
-1. Forest Plot: Khoảng tin cậy 95% Bootstrap cho các mô hình.
-2. McNemar Contingency Heatmap: Bảng tiếp liên thể hiện phân bố mẫu đúng/sai chéo.
-3. Cross-Validation Boxplot: Biểu đồ hộp phân bố điểm F1 qua 10 fold.
-4. Latency Distribution Plot: Phân bố thời gian suy luận (KDE) kèm mốc P95/P99.
-5. ROC-AUC Curves: Đường cong ROC so sánh năng lực phân loại của 3 mô hình.
+Scientific visualization module for statistical evaluation and model benchmarking:
+1. Forest Plot: 95% Bootstrap Confidence Intervals for AI models.
+2. McNemar Contingency Heatmap: 2x2 contingency tables displaying cross-classification errors.
+3. Cross-Validation Boxplot: 10-Fold CV score distributions with Repeated Measures ANOVA.
+4. Latency Distribution Plot: Empirical KDE of inference latency with P95/P99 percentiles.
+5. ROC-AUC Curves: Receiver Operating Characteristic curves comparing discriminative power.
 """
 
 import os
@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.metrics import roc_curve, auc
 
-# Cấu hình phong cách biểu đồ học thuật
+# Scientific plotting style configuration
 plt.style.use('seaborn-v0_8-whitegrid' if 'seaborn-v0_8-whitegrid' in plt.style.available else 'default')
 plt.rcParams['font.family'] = 'DejaVu Sans'
 plt.rcParams['font.size'] = 11
@@ -23,12 +23,12 @@ plt.rcParams['font.size'] = 11
 
 def plot_forest_plot(bootstrap_results: dict, output_path: str = "results/figures/forest_plot_ci.png"):
     """
-    Vẽ biểu đồ Forest Plot thể hiện điểm ước lượng và khoảng tin cậy 95% Bootstrap của các mô hình.
+    Plots a Forest Plot displaying Point Estimates and 95% Bootstrap Confidence Intervals.
     """
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
     fig, axes = plt.subplots(1, 2, figsize=(14, 5), sharey=True)
     
-    metrics = [("f1_score", "F1-Score (Weighted)"), ("accuracy", "Accuracy")]
+    metrics = [("f1_score", "Weighted F1-Score"), ("accuracy", "Accuracy")]
     colors = ["#1f77b4", "#2ca02c", "#d62728"]
     
     for ax_idx, (metric_key, metric_title) in enumerate(metrics):
@@ -52,20 +52,20 @@ def plot_forest_plot(bootstrap_results: dict, output_path: str = "results/figure
             
         ax.set_yticks(y_pos)
         ax.set_yticklabels(model_names, fontsize=11, fontweight='bold')
-        ax.set_xlabel(f"Chỉ số {metric_title}", fontsize=12)
-        ax.set_title(f"Khoảng tin cậy 95% Bootstrap - {metric_title}", fontsize=13, fontweight='bold')
+        ax.set_xlabel(f"{metric_title}", fontsize=12)
+        ax.set_title(f"95% Bootstrap Confidence Intervals - {metric_title}", fontsize=13, fontweight='bold')
         ax.set_xlim(min(lowers) - 0.03, max(uppers) + 0.03)
         ax.grid(True, linestyle='--', alpha=0.6)
         
     plt.tight_layout()
     plt.savefig(output_path, dpi=300)
     plt.close()
-    print(f"[Visualizer] Đã lưu Forest Plot: {output_path}")
+    print(f"[Visualizer] Saved Forest Plot: {output_path}")
 
 
 def plot_mcnemar_heatmap(mcnemar_results: list[dict], output_path: str = "results/figures/mcnemar_contingency.png"):
     """
-    Vẽ ma trận tiếp liên (Contingency Matrix) cho các cặp so sánh trong kiểm định McNemar.
+    Plots contingency heatmaps for paired model comparisons in McNemar's test.
     """
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
     n_pairs = len(mcnemar_results)
@@ -86,10 +86,10 @@ def plot_mcnemar_heatmap(mcnemar_results: list[dict], output_path: str = "result
         
         mA = res["model_A"].split()[0]
         mB = res["model_B"].split()[0]
-        ax.set_xticklabels([f'{mB} Đúng', f'{mB} Sai'], fontsize=10)
-        ax.set_yticklabels([f'{mA} Đúng', f'{mA} Sai'], fontsize=10, rotation=0)
+        ax.set_xticklabels([f'{mB} Correct', f'{mB} Incorrect'], fontsize=10)
+        ax.set_yticklabels([f'{mA} Correct', f'{mA} Incorrect'], fontsize=10, rotation=0)
         
-        sig_str = "Có ý nghĩa (p < 0.05)" if res["is_significant_at_05"] else "Không ý nghĩa (p >= 0.05)"
+        sig_str = "Significant (p < 0.05)" if res["is_significant_at_05"] else "Not Significant (p >= 0.05)"
         p_val_fmt = f"{res['p_value']:.4e}" if res['p_value'] < 0.0001 else f"{res['p_value']:.4f}"
         ax.set_title(f"{mA} vs {mB}\nChi-sq={res['statistic']:.2f}, p={p_val_fmt}\n({sig_str})", 
                      fontsize=11, fontweight='bold')
@@ -97,12 +97,12 @@ def plot_mcnemar_heatmap(mcnemar_results: list[dict], output_path: str = "result
     plt.tight_layout()
     plt.savefig(output_path, dpi=300)
     plt.close()
-    print(f"[Visualizer] Đã lưu McNemar Heatmap: {output_path}")
+    print(f"[Visualizer] Saved McNemar Heatmap: {output_path}")
 
 
 def plot_cv_boxplots(cv_results: dict, output_path: str = "results/figures/cv_scores_comparison.png"):
     """
-    Vẽ biểu đồ Boxplot + Jitter Points cho kết quả 10-Fold Cross-Validation.
+    Plots Boxplots + Jittered observations for 10-Fold Stratified Cross-Validation.
     """
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
     fold_scores = cv_results["fold_scores"]
@@ -116,29 +116,29 @@ def plot_cv_boxplots(cv_results: dict, output_path: str = "results/figures/cv_sc
     plt.figure(figsize=(9, 5))
     palette = ["#1f77b4", "#2ca02c", "#d62728"]
     
-    sns.boxplot(x="Model", y="F1-Score", data=df_cv, palette=palette, width=0.45,
-                boxprops=dict(alpha=0.8), showmeans=True,
+    sns.boxplot(x="Model", y="F1-Score", data=df_cv, hue="Model", palette=palette, width=0.45,
+                legend=False, boxprops=dict(alpha=0.8), showmeans=True,
                 meanprops={"marker":"o", "markerfacecolor":"yellow", "markeredgecolor":"black", "markersize":"8"})
     sns.stripplot(x="Model", y="F1-Score", data=df_cv, color='black', alpha=0.6, jitter=0.15, size=7)
     
     anova = cv_results["anova"]
-    plt.title(f"Phân bố Điểm F1 qua 10-Fold Stratified Cross-Validation\n"
+    plt.title(f"10-Fold Stratified Cross-Validation F1-Score Distribution\n"
               f"Repeated Measures ANOVA: F = {anova['f_statistic']:.3f}, p-value = {anova['p_value']:.4e}",
               fontsize=13, fontweight='bold')
-    plt.xlabel("Mô hình AI", fontsize=12)
+    plt.xlabel("AI Architecture", fontsize=12)
     plt.ylabel("Weighted F1-Score", fontsize=12)
     plt.grid(True, linestyle='--', alpha=0.6)
     
     plt.tight_layout()
     plt.savefig(output_path, dpi=300)
     plt.close()
-    print(f"[Visualizer] Đã lưu CV Boxplots: {output_path}")
+    print(f"[Visualizer] Saved CV Boxplots: {output_path}")
 
 
 def plot_latency_distributions(latencies_dict: dict, latency_stats: dict, 
                                output_path: str = "results/figures/latency_distribution.png"):
     """
-    Vẽ biểu đồ phân phối độ trễ suy luận (KDE) kèm mốc trung vị và bách phân vị P95, P99.
+    Plots empirical KDE of inference latency alongside Median, P95, and P99 benchmarks.
     """
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
     plt.figure(figsize=(10, 5))
@@ -150,25 +150,25 @@ def plot_latency_distributions(latencies_dict: dict, latency_stats: dict,
         sns.kdeplot(arr, label=f"{name} (Median: {stats_item['median_ms']:.2f}ms, P95: {stats_item['p95_ms']:.2f}ms)",
                     color=colors[name], linewidth=2.2, fill=True, alpha=0.15)
         
-        # Mốc P95
+        # P95 line marker
         plt.axvline(stats_item['p95_ms'], color=colors[name], linestyle=':', alpha=0.7)
         
-    plt.title("Phân phối Thời gian Suy luận (Inference Latency Distribution per Sample)\n"
-              "Đường chấm nét dọc (:) thể hiện mốc Bách phân vị P95", fontsize=13, fontweight='bold')
-    plt.xlabel("Thời gian suy luận (mili-giây / sample)", fontsize=12)
-    plt.ylabel("Mật độ xác suất (Density)", fontsize=12)
+    plt.title("Per-Sample Inference Latency Distribution (Empirical Density)\n"
+              "Vertical dotted lines (:) indicate the 95th Percentile (P95 SLA Benchmark)", fontsize=13, fontweight='bold')
+    plt.xlabel("Inference Latency (milliseconds per sample)", fontsize=12)
+    plt.ylabel("Probability Density", fontsize=12)
     plt.legend(fontsize=10, loc="upper right")
     plt.grid(True, linestyle='--', alpha=0.6)
     
     plt.tight_layout()
     plt.savefig(output_path, dpi=300)
     plt.close()
-    print(f"[Visualizer] Đã lưu Latency Distribution: {output_path}")
+    print(f"[Visualizer] Saved Latency Distribution: {output_path}")
 
 
 def plot_roc_curves(eval_results: dict, y_test: np.ndarray, output_path: str = "results/figures/roc_curves.png"):
     """
-    Vẽ biểu đồ ROC-AUC so sánh khả năng phân biệt của 3 mô hình.
+    Plots Receiver Operating Characteristic (ROC) curves comparing model discrimination.
     """
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
     plt.figure(figsize=(8, 6))
@@ -179,16 +179,16 @@ def plot_roc_curves(eval_results: dict, y_test: np.ndarray, output_path: str = "
         roc_auc = auc(fpr, tpr)
         plt.plot(fpr, tpr, color=colors[name], lw=2.2, label=f"{name} (AUC = {roc_auc:.4f})")
         
-    plt.plot([0, 1], [0, 1], color='navy', lw=1.5, linestyle='--', label='Ngẫu nhiên (AUC = 0.5000)')
+    plt.plot([0, 1], [0, 1], color='navy', lw=1.5, linestyle='--', label='Random Chance (AUC = 0.5000)')
     plt.xlim([0.0, 1.0])
     plt.ylim([0.0, 1.05])
-    plt.xlabel('Tỷ lệ Dương tính Giả (False Positive Rate)', fontsize=12)
-    plt.ylabel('Tỷ lệ Dương tính Thật (True Positive Rate)', fontsize=12)
-    plt.title('Đường cong Đặc trưng Hoạt động của Bộ thu (ROC Curves)', fontsize=13, fontweight='bold')
+    plt.xlabel('False Positive Rate (1 - Specificity)', fontsize=12)
+    plt.ylabel('True Positive Rate (Sensitivity / Recall)', fontsize=12)
+    plt.title('Receiver Operating Characteristic (ROC) Curves', fontsize=13, fontweight='bold')
     plt.legend(loc="lower right", fontsize=11)
     plt.grid(True, linestyle='--', alpha=0.6)
     
     plt.tight_layout()
     plt.savefig(output_path, dpi=300)
     plt.close()
-    print(f"[Visualizer] Đã lưu ROC Curves: {output_path}")
+    print(f"[Visualizer] Saved ROC Curves: {output_path}")

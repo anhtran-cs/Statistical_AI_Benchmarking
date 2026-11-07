@@ -204,60 +204,60 @@
     "latency_analysis": {
         "summary_statistics": {
             "Logistic Regression": {
-                "mean_ms": 2.2235756666782436,
-                "std_ms": 0.2818671545224825,
-                "median_ms": 2.1011500002714456,
-                "iqr_ms": 0.35075000027973147,
-                "p95_ms": 2.7667399999245386,
-                "p99_ms": 3.2176479999588987,
-                "lognormal_ks_statistic": 0.19398528736614473,
-                "lognormal_ks_pvalue": 2.9723825600211486e-20
+                "mean_ms": 2.306945666662917,
+                "std_ms": 0.3067004798311506,
+                "median_ms": 2.2417500003939494,
+                "iqr_ms": 0.4364999999779684,
+                "p95_ms": 2.8955899997981756,
+                "p99_ms": 3.2253670005229647,
+                "lognormal_ks_statistic": 0.10369630367086657,
+                "lognormal_ks_pvalue": 4.5248888972531844e-06
             },
             "Random Forest": {
-                "mean_ms": 24.597949500004386,
-                "std_ms": 3.246341488803828,
-                "median_ms": 23.75034999977288,
-                "iqr_ms": 1.4587499997560371,
-                "p95_ms": 30.026880000036726,
-                "p99_ms": 36.73219299985703,
-                "lognormal_ks_statistic": 0.23174572478821154,
-                "lognormal_ks_pvalue": 8.136090871884023e-29
+                "mean_ms": 24.991525666663012,
+                "std_ms": 3.8719792091647354,
+                "median_ms": 23.849600000175997,
+                "iqr_ms": 2.289950000204044,
+                "p95_ms": 31.630074999930002,
+                "p99_ms": 35.37185199998929,
+                "lognormal_ks_statistic": 0.18700734323728285,
+                "lognormal_ks_pvalue": 7.641775213311996e-19
             },
             "Multi-Layer Perceptron": {
-                "mean_ms": 2.3101446666775396,
-                "std_ms": 0.2748913882425668,
-                "median_ms": 2.1970500001771143,
-                "iqr_ms": 0.30634999984613387,
-                "p95_ms": 2.916450000361692,
-                "p99_ms": 3.1801840000071024,
-                "lognormal_ks_statistic": 0.17541456778751913,
-                "lognormal_ks_pvalue": 1.2831661721427345e-16
+                "mean_ms": 2.542808833330431,
+                "std_ms": 0.4236700849881946,
+                "median_ms": 2.438250000068365,
+                "iqr_ms": 0.5286749999413587,
+                "p95_ms": 3.3834449995083555,
+                "p99_ms": 3.7040230000366137,
+                "lognormal_ks_statistic": 0.08229463956391742,
+                "lognormal_ks_pvalue": 0.0005542103817490758
             }
         },
         "pairwise_latency_tests": [
             {
                 "pair": "Logistic Regression vs Random Forest",
                 "u_statistic": 0.0,
-                "p_value": 1.4315078999608185e-197,
+                "p_value": 1.4315414604226602e-197,
                 "is_significant_05": true,
                 "faster_model": "Logistic Regression",
-                "speedup_ratio": 11.30350046246322
+                "speedup_ratio": 10.638831268421917
             },
             {
                 "pair": "Logistic Regression vs Multi-Layer Perceptron",
-                "u_statistic": 122064.5,
-                "p_value": 4.829385258974924e-22,
+                "u_statistic": 113670.0,
+                "p_value": 2.1844900380090495e-28,
                 "is_significant_05": true,
                 "faster_model": "Logistic Regression",
-                "speedup_ratio": 1.0456416723666941
+                "speedup_ratio": 1.087654733864117
             },
             {
                 "pair": "Random Forest vs Multi-Layer Perceptron",
                 "u_statistic": 360000.0,
-                "p_value": 1.4315146119903907e-197,
+                "p_value": 1.431548172609183e-197,
                 "is_significant_05": true,
                 "faster_model": "Multi-Layer Perceptron",
-                "speedup_ratio": 10.810109008833779
+                "speedup_ratio": 9.781441607508373
             }
         ]
     }

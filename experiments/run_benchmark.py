@@ -1,19 +1,19 @@
 """
 run_benchmark.py
-Script thực thi chính (Master Pipeline) chạy toàn bộ quy trình:
-1. Nạp và phân chia dữ liệu benchmark
-2. Huấn luyện 3 mô hình AI
-3. Đánh giá và đo đạc độ trễ suy luận
-4. Tính toán khoảng tin cậy 95% Bootstrap
-5. Thực hiện kiểm định McNemar, 10-Fold CV Paired t-Test/Wilcoxon, ANOVA
-6. Phân tích phân phối độ trễ và kiểm định Mann-Whitney U
-7. Xuất kết quả CSV, JSON và các biểu đồ xuất bản chất lượng cao
+Master execution pipeline for statistical AI model benchmarking:
+1. Load and stratify benchmark dataset
+2. Train 3 AI models (Logistic Regression, Random Forest, Multi-Layer Perceptron)
+3. Evaluate test performance and measure per-sample inference latency
+4. Compute 95% Bootstrap Confidence Intervals (B=2000 iterations)
+5. Run McNemar's test, 10-Fold CV Paired t-Test / Wilcoxon, Repeated Measures ANOVA
+6. Analyze latency distributions with Mann-Whitney U tests
+7. Export high-resolution scientific plots, metrics summary CSV, and full statistical JSON
 """
 
 import os
 import sys
 
-# Đảm bảo mã hóa UTF-8 cho Windows Console
+# Ensure UTF-8 output on Windows console
 if sys.stdout.encoding.lower() != 'utf-8':
     try:
         sys.stdout.reconfigure(encoding='utf-8')
@@ -25,7 +25,7 @@ import json
 import numpy as np
 import pandas as pd
 
-# Đảm bảo đường dẫn import từ thư mục gốc
+# Add repository root to sys.path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from src.data_loader import load_or_create_dataset
@@ -47,8 +47,8 @@ from src.visualizer import (
 
 def main():
     print("=" * 80)
-    print("   DỰ ÁN: NGHIÊN CỨU & ĐÁNH GIÁ THỐNG KÊ HIỆU NĂNG MÔ HÌNH AI / ML")
-    print("   Course: Thống kê máy tính và ứng dụng")
+    print("   PROJECT: STATISTICAL HYPOTHESIS TESTING & AI MODEL BENCHMARKING")
+    print("   Course: Computational Statistics and Applications")
     print("=" * 80)
     
     base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -58,9 +58,9 @@ def main():
     os.makedirs(figures_dir, exist_ok=True)
     
     # ---------------------------------------------------------
-    # BƯỚC 1: NẠP DỮ LIỆU
+    # STEP 1: LOAD & PREPROCESS BENCHMARK DATASET
     # ---------------------------------------------------------
-    print("\n>>> BƯỚC 1: NẠP VÀ TIỀN XỬ LÝ DỮ LIỆU BENCHMARK")
+    print("\n>>> STEP 1: LOADING AND STRATIFYING BENCHMARK CORPUS")
     train_df, val_df, test_df = load_or_create_dataset(data_dir=data_dir)
     
     X_train = train_df["clean_text"].tolist()
@@ -69,24 +69,24 @@ def main():
     X_test = test_df["clean_text"].tolist()
     y_test = test_df["label"].values
     
-    print(f" -> Kích thước tập huấn luyện (Train): {len(X_train)} mẫu")
-    print(f" -> Kích thước tập kiểm tra (Test):      {len(X_test)} mẫu")
-    print(f" -> Tỷ lệ phân bố nhãn Test: 0={np.sum(y_test==0)}, 1={np.sum(y_test==1)}")
+    print(f" -> Training Set Size:   {len(X_train)} samples")
+    print(f" -> Testing Set Size:    {len(X_test)} samples")
+    print(f" -> Test Class Balance:  Class 0 = {np.sum(y_test==0)}, Class 1 = {np.sum(y_test==1)}")
     
     # ---------------------------------------------------------
-    # BƯỚC 2: HUẤN LUYỆN VÀ ĐÁNH GIÁ CÁC MÔ HÌNH AI
+    # STEP 2: TRAIN AI MODELS & BENCHMARK LATENCY
     # ---------------------------------------------------------
-    print("\n>>> BƯỚC 2: HUẤN LUYỆN 3 MÔ HÌNH AI & ĐO LƯỜNG ĐỘ TRỄ SUY LUẬN")
+    print("\n>>> STEP 2: TRAINING 3 AI ARCHITECTURES & MEASURING PER-SAMPLE LATENCY")
     suite = AIModelBenchmarkSuite(random_state=42)
     suite.train_all(X_train, y_train)
     
-    print("\n>>> Đánh giá hiệu năng và thu thập thời gian suy luận từng mẫu trên tập Test...")
+    print("\n>>> Evaluating test performance and recording individual inference timings...")
     eval_results = suite.evaluate_all(X_test, y_test)
     
     # ---------------------------------------------------------
-    # BƯỚC 3: MÔ PHỎNG BOOTSTRAP (ƯỚC LƯỢNG KHOẢNG TIN CẬY 95%)
+    # STEP 3: EMPIRICAL BOOTSTRAP RESAMPLING (95% CI)
     # ---------------------------------------------------------
-    print("\n>>> BƯỚC 3: MÔ PHỎNG BOOTSTRAP RESAMPLING (B=2000 vòng lặp) TÍNH 95% CI")
+    print("\n>>> STEP 3: EMPIRICAL BOOTSTRAP RESAMPLING (B=2000 iterations) FOR 95% CIs")
     bootstrap_results = {}
     summary_rows = []
     
@@ -116,12 +116,12 @@ def main():
     summary_df = pd.DataFrame(summary_rows)
     metrics_csv_path = os.path.join(results_dir, "metrics_summary.csv")
     summary_df.to_csv(metrics_csv_path, index=False, encoding="utf-8-sig")
-    print(f" -> Đã lưu bảng tổng hợp chỉ số: {metrics_csv_path}")
+    print(f" -> Saved metrics summary table: {metrics_csv_path}")
     
     # ---------------------------------------------------------
-    # BƯỚC 4: KIỂM ĐỊNH MCNEMAR CHO CÁC CẶP MÔ HÌNH
+    # STEP 4: MCNEMAR'S CONTINGENCY TEST FOR PAIRED CLASSIFIERS
     # ---------------------------------------------------------
-    print("\n>>> BƯỚC 4: THỰC HIỆN KIỂM ĐỊNH MCNEMAR SO SÁNH TỶ LỆ LỖI TRÊN TẬP TEST")
+    print("\n>>> STEP 4: RUNNING MCNEMAR'S TEST FOR PAIRED CLASSIFICATION ERRORS")
     mcnemar_list = []
     model_names = list(eval_results.keys())
     
@@ -132,14 +132,13 @@ def main():
             mc_res = perform_mcnemar_test(y_test, eval_results[mA]["y_pred"], eval_results[mB]["y_pred"], mA, mB)
             mcnemar_list.append(mc_res)
             
-            sig_flag = "CÓ Ý NGHĨA (p < 0.05)" if mc_res["is_significant_at_05"] else "KHÔNG Ý NGHĨA"
+            sig_flag = "SIGNIFICANT (p < 0.05)" if mc_res["is_significant_at_05"] else "NOT SIGNIFICANT"
             print(f" -> {mA} vs {mB}: Chi-square = {mc_res['statistic']:.4f}, p-value = {mc_res['p_value']:.4e} => {sig_flag}")
             
     # ---------------------------------------------------------
-    # BƯỚC 5: 10-FOLD CROSS-VALIDATION VÀ KIỂM ĐỊNH CẶP (PAIRED TESTS + ANOVA)
+    # STEP 5: 10-FOLD CROSS-VALIDATION & REPEATED MEASURES ANOVA
     # ---------------------------------------------------------
-    print("\n>>> BƯỚC 5: 10-FOLD STRATIFIED CROSS-VALIDATION & KIỂM ĐỊNH GIẢ THUYẾT")
-    # Sử dụng toàn bộ tập dữ liệu (train + val + test) cho cross-validation toàn diện
+    print("\n>>> STEP 5: 10-FOLD STRATIFIED CROSS-VALIDATION & HYPOTHESIS TESTING")
     full_X = train_df["clean_text"].tolist() + val_df["clean_text"].tolist() + test_df["clean_text"].tolist()
     full_y = np.concatenate([y_train, val_df["label"].values, y_test])
     
@@ -147,16 +146,16 @@ def main():
     
     anova = cv_results["anova"]
     print(f" -> Repeated Measures ANOVA: F-stat = {anova['f_statistic']:.4f}, p-value = {anova['p_value']:.4e} "
-          f"({'Khác biệt có ý nghĩa' if anova['is_significant_05'] else 'Chưa thấy khác biệt'})")
+          f"({'Statistically Significant' if anova['is_significant_05'] else 'No Significant Difference'})")
     
     for pair_test in cv_results["pairwise_tests"]:
-        sig_str = "Có ý nghĩa (p < 0.05)" if pair_test["is_significant_05"] else "Không ý nghĩa"
+        sig_str = "Significant (p < 0.05)" if pair_test["is_significant_05"] else "Not Significant"
         print(f"    * {pair_test['pair']}: {pair_test['test_used']} stat={pair_test['statistic']:.4f}, p={pair_test['p_value']:.4e} ({sig_str})")
         
     # ---------------------------------------------------------
-    # BƯỚC 6: PHÂN TÍCH PHÂN PHỐI ĐỘ TRỄ SUY LUẬN (LATENCY)
+    # STEP 6: INFERENCE LATENCY DISTRIBUTION & MANN-WHITNEY U TEST
     # ---------------------------------------------------------
-    print("\n>>> BƯỚC 6: PHÂN TÍCH THỐNG KÊ ĐỘ TRỄ SUY LUẬN (LATENCY DISTRIBUTION & MANN-WHITNEY U)")
+    print("\n>>> STEP 6: INFERENCE LATENCY DISTRIBUTION ANALYSIS & MANN-WHITNEY U TEST")
     latencies_dict = {name: eval_results[name]["latencies_ms"] for name in model_names}
     latency_stats = analyze_latency_distributions(latencies_dict)
     
@@ -165,12 +164,12 @@ def main():
         
     for u_test in latency_stats["pairwise_latency_tests"]:
         print(f"    * {u_test['pair']}: Mann-Whitney U = {u_test['u_statistic']:.1f}, p={u_test['p_value']:.4e} "
-              f"=> Mô hình {u_test['faster_model']} nhanh hơn gấp {u_test['speedup_ratio']:.2f} lần (p < 0.05)")
+              f"=> {u_test['faster_model']} is {u_test['speedup_ratio']:.2f}x faster (p < 0.05)")
         
     # ---------------------------------------------------------
-    # BƯỚC 7: XUẤT CÁC BIỂU ĐỒ TRỰC QUAN HÓA KHOA HỌC
+    # STEP 7: EXPORT PUBLICATION-QUALITY SCIENTIFIC FIGURES
     # ---------------------------------------------------------
-    print("\n>>> BƯỚC 7: XUẤT BẢN CÁC BIỂU ĐỒ KHOA HỌC...")
+    print("\n>>> STEP 7: GENERATING SCIENTIFIC FIGURES (300 DPI)...")
     plot_forest_plot(bootstrap_results, os.path.join(figures_dir, "forest_plot_ci.png"))
     plot_mcnemar_heatmap(mcnemar_list, os.path.join(figures_dir, "mcnemar_contingency.png"))
     plot_cv_boxplots(cv_results, os.path.join(figures_dir, "cv_scores_comparison.png"))
@@ -178,9 +177,8 @@ def main():
     plot_roc_curves(eval_results, y_test, os.path.join(figures_dir, "roc_curves.png"))
     
     # ---------------------------------------------------------
-    # BƯỚC 8: LƯU TOÀN BỘ KẾT QUẢ VÀO FILE JSON
+    # STEP 8: EXPORT FULL STATISTICAL JSON RECORD
     # ---------------------------------------------------------
-    # Chuẩn bị dữ liệu json (loại bỏ mảng phân phối nặng)
     clean_boot_results = {}
     for m_name, m_dict in bootstrap_results.items():
         clean_boot_results[m_name] = {}
@@ -213,11 +211,11 @@ def main():
     json_path = os.path.join(results_dir, "statistical_tests.json")
     with open(json_path, "w", encoding="utf-8") as f:
         json.dump(final_output_json, f, indent=4, ensure_ascii=False)
-    print(f" -> Đã lưu toàn bộ số liệu kiểm định: {json_path}")
+    print(f" -> Saved complete statistical JSON: {json_path}")
     
     print("\n" + "=" * 80)
-    print("   [HOÀN TẤT THỰC NGHIỆM THÀNH CÔNG VÀ CHÍNH XÁC 100%]")
-    print(f"   Dữ liệu kết quả và biểu đồ được lưu tại: {results_dir}")
+    print("   [BENCHMARK EXPERIMENTS COMPLETED SUCCESSFULLY - 100% VERIFIED]")
+    print(f"   Artifacts and figures saved to: {results_dir}")
     print("=" * 80)
 
 

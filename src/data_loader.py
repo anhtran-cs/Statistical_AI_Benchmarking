@@ -1,7 +1,7 @@
 """
 data_loader.py
-Module tải, tiền xử lý và phân chia dữ liệu đánh giá thực nghiệm cho mô hình AI.
-Hỗ trợ cả việc đọc từ file CSV thực tế và tự động tạo tập benchmark chuẩn hóa (Benchmark Corpus).
+Module for loading, cleaning, and stratifying benchmark evaluation corpora for AI models.
+Supports loading pre-existing CSV datasets or automatically synthesizing benchmark corpora.
 """
 
 import os
@@ -13,7 +13,8 @@ from sklearn.model_selection import train_test_split
 
 def clean_text(text: str) -> str:
     """
-    Tiền xử lý văn bản: chuẩn hóa chữ thường, loại bỏ ký tự lạ, làm sạch khoảng trắng.
+    Cleans raw text: lowercasing, stripping URLs/emails, removing non-alphanumeric noise,
+    and standardizing whitespace.
     """
     if not isinstance(text, str):
         return ""

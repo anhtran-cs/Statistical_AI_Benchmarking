@@ -1,9 +1,9 @@
 """
 models.py
-Module định nghĩa và quản lý vòng đời huấn luyện, dự đoán của 3 mô hình AI/ML:
-1. Model A: Logistic Regression (Mô hình tuyến tính cơ sở - Statistical Baseline)
-2. Model B: Random Forest Classifier (Mô hình cây học máy kết hợp - Ensemble Tree)
-3. Model C: Multi-Layer Perceptron / Dense Neural Network (Mô hình mạng nơ-ron học sâu - Deep Learning Paradigm)
+Defines and manages the training and evaluation lifecycles of three competing AI paradigms:
+1. Model A: Logistic Regression (Statistical Linear Baseline)
+2. Model B: Random Forest Classifier (Non-linear Ensemble Tree Model)
+3. Model C: Multi-Layer Perceptron (Deep Learning / Dense Neural Network Paradigm)
 """
 
 import time
